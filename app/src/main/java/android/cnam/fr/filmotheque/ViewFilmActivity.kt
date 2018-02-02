@@ -33,6 +33,8 @@ class ViewFilmActivity : AppCompatActivity() {
         }
 
 
+//        TODO caller l'auto complétion sur le bouton AddActor
+
         btnReturn.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
             finish()
@@ -102,7 +104,7 @@ class ViewFilmActivity : AppCompatActivity() {
         editNewActor.requestFocus()
     }
 
-//    TODO -> Pour l'instant le bouton MODIFIER duplique les acteurs. C'est pas bien.
+//    TODO -> Pour l'instant le bouton MODIFIER duplique les acteurs. C'est pas bien. Il faut que les cliks changent l'arrayList des acteurs du film et que le bouton applique les updates si changement il y a
 
     fun updateFilm(film: Film) {
         val db = FeedReaderContract.FeedReaderDbHelper(this).writableDatabase
