@@ -7,4 +7,5 @@
     <string name="btnOk">Ok</string>
     <string name="btnAddActor">Ajouter un acteur</string>
     <string name="btnActorManagement">Gérer les acteurs</string>
+    <string name="actorName">JeanMichel LALALA</string>
 </resources>

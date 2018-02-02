@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.menu_activity.*
 
 //TODO("pour les photos") https://github.com/coomar2841/android-multipicker-library
 //TODO gérer la rotation
-//TODO Finir la deuxième version de l'accès à la database (celle là rajoute une table des acteurs)
 
 class MenuActivity : AppCompatActivity() {
 
@@ -39,8 +38,11 @@ class MenuActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.menu_activity)
         addFilm.setOnClickListener {
-            val intent = Intent(this, ViewFilmActivity::class.java)
-            startActivityForResult(intent, 1)
+            startActivityForResult(Intent(this, ViewFilmActivity::class.java), 1)
+        }
+
+        btnActorManagement.setOnClickListener {
+            startActivityForResult(Intent(this, ActorManagementActivity::class.java), 1)
         }
         //définit l'agencement des cellules, ici de façon verticale, comme une ListView
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -55,9 +57,6 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
-
-
-//    TODO prendre compte des acteurs (nelle table et tout)
 
     fun loadFilms(): ArrayList<Film> {
         films.clear()
@@ -88,21 +87,21 @@ class MenuActivity : AppCompatActivity() {
         return films
     }
 
-    fun actorsByMovie(idFilm : Int): ArrayList<String>{
+    fun actorsByMovie(idFilm: Int): ArrayList<String> {
         val dbHelper = FeedReaderContract.FeedReaderDbHelper(this)
         val db = dbHelper.readableDatabase
         val actorList: ArrayList<String> = arrayListOf(String())
         val cursor = db.query(true,
                 "films,actors, link",
                 arrayOf("actors.nom"),
-                "films._id = link.film AND actors._id = link.actor AND films._id ="+idFilm,
+                "films._id = link.film AND actors._id = link.actor AND films._id =" + idFilm,
                 null,
                 null,
                 null,
                 null,
                 null)
 
-        Log.i("La requequete",cursor.toString())
+        Log.i("La requequete", cursor.toString())
 
         with(cursor) {
             while (moveToNext()) {

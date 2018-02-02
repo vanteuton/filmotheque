@@ -32,11 +32,24 @@
         </android.support.v7.widget.RecyclerView>
     </ScrollView>
 
-    <Button
-        android:id="@+id/addFilm"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_gravity="end"
-        android:text="Ajouter un film" />
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/addFilm"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="end"
+            android:text="Ajouter un film" />
+
+        <Button
+            android:id="@+id/btnActorManagement"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/btnActorManagement" />
+    </LinearLayout>
 </LinearLayout>

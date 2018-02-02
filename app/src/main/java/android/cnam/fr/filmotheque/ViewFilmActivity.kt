@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
@@ -31,9 +32,6 @@ class ViewFilmActivity : AppCompatActivity() {
             addActor()
         }
 
-        btnActorManagement.setOnClickListener {
-            startActivity(Intent(this, ActorManagementActivity::class.java))
-        }
 
         btnReturn.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
@@ -83,14 +81,14 @@ class ViewFilmActivity : AppCompatActivity() {
 
     }
 
-
-    //    TODO Mettre le focus sur le nouveau EditTexte et lui imposer une seule ligne.
     fun addActor(actorName: String = "") {
         val miniLayout = LinearLayout(applicationContext)
         miniLayout.orientation = LinearLayout.HORIZONTAL
         val editNewActor = EditText(applicationContext)
         editNewActor.textAlignment = View.TEXT_ALIGNMENT_CENTER
         editNewActor.setText(actorName)
+        editNewActor.maxLines = 1
+        editNewActor.inputType = InputType.TYPE_CLASS_TEXT
         val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 5f)
         editNewActor.layoutParams = param
         val removeBtn = Button(applicationContext)
@@ -101,7 +99,10 @@ class ViewFilmActivity : AppCompatActivity() {
         miniLayout.addView(editNewActor)
         miniLayout.addView(removeBtn)
         ActorView.addView(miniLayout)
+        editNewActor.requestFocus()
     }
+
+//    TODO -> Pour l'instant le bouton MODIFIER duplique les acteurs. C'est pas bien.
 
     fun updateFilm(film: Film) {
         val db = FeedReaderContract.FeedReaderDbHelper(this).writableDatabase

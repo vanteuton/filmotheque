@@ -18,7 +18,6 @@ object FeedReaderContract {
         //Table des Acteurs
         const val TABLE_NAME_ACTORS = "actors"
         const val COLUMN_NAME_NAME = "nom"
-        const val COLUMN_NAME_FORENAME = "prenom"
         const val COLUMN_NAME_PIC = "photo"
 
 
@@ -39,7 +38,6 @@ object FeedReaderContract {
             "CREATE TABLE ${FeedEntry.TABLE_NAME_ACTORS} (" +
                     "${BaseColumns._ID} INTEGER PRIMARY KEY," +
                     "${FeedEntry.COLUMN_NAME_NAME} TEXT," +
-                    "${FeedEntry.COLUMN_NAME_FORENAME} TEXT," +
                     "${FeedEntry.COLUMN_NAME_PIC} TEXT)"
 
     private const val SQL_CREATE_LINK =
