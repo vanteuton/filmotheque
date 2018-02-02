@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Filmotheque</string>
+    <string name="title">Titre du film</string>
+    <string name="year">Année de sortie</string>
+    <string name="actor">Acteur.s</string>
+    <string name="synopsis">Résumé du film</string>
+    <string name="btnOk">Ok</string>
+    <string name="btnAddActor">Ajouter un acteur</string>
+    <string name="btnActorManagement">Gérer les acteurs</string>
+</resources>
