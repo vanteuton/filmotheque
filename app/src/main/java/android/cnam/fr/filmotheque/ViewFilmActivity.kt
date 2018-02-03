@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.BaseColumns
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.InputType
@@ -16,12 +17,15 @@ import android.widget.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_view_film.*
+import android.widget.AutoCompleteTextView
+import android.widget.ArrayAdapter
 
 
 class ViewFilmActivity : AppCompatActivity() {
 
     val gson = Gson()
     val listType = object : TypeToken<List<String>>() {}.type
+    val nameList = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +36,11 @@ class ViewFilmActivity : AppCompatActivity() {
             addActor()
         }
 
+        loadActors().forEach { nameList.add(it.name) }
 
-//        TODO caller l'auto complétion sur le bouton AddActor
+        val autocompleteAdapter = ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, nameList)
+
+        firstActor.setAdapter<ArrayAdapter<String>>(autocompleteAdapter)
 
         btnReturn.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
@@ -80,13 +87,41 @@ class ViewFilmActivity : AppCompatActivity() {
             btnDelete.isEnabled = false
             btnOk.isEnabled = false
         }
+    }
 
+    fun loadActors(): ArrayList<Actor> {
+        val actors = arrayListOf<Actor>()
+        val gson = Gson()
+        val listType = object : TypeToken<Array<String>>() {}.type
+        val dbHelper = FeedReaderContract.FeedReaderDbHelper(this)
+        val db = dbHelper.readableDatabase
+//        ça c'est mon cursor à moi qui va TOUT chercher dans la table actor
+        val cursor = db.query(true,
+                FeedReaderContract.FeedEntry.TABLE_NAME_ACTORS,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null)
+
+        with(cursor) {
+            while (moveToNext()) {
+                val name = getString(getColumnIndexOrThrow(FeedReaderContract.FeedEntry.COLUMN_NAME_NAME))
+                val id = getInt(getColumnIndexOrThrow(BaseColumns._ID))
+                actors.add(Actor(id, name, 0))
+            }
+        }
+        return actors
     }
 
     fun addActor(actorName: String = "") {
+        val autocompleteAdapter = ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, nameList)
         val miniLayout = LinearLayout(applicationContext)
         miniLayout.orientation = LinearLayout.HORIZONTAL
-        val editNewActor = EditText(applicationContext)
+        val editNewActor = AutoCompleteTextView(applicationContext)
+        editNewActor.setAdapter<ArrayAdapter<String>>(autocompleteAdapter)
         editNewActor.textAlignment = View.TEXT_ALIGNMENT_CENTER
         editNewActor.setText(actorName)
         editNewActor.maxLines = 1
@@ -103,7 +138,6 @@ class ViewFilmActivity : AppCompatActivity() {
         ActorView.addView(miniLayout)
         editNewActor.requestFocus()
     }
-
 //    TODO -> Pour l'instant le bouton MODIFIER duplique les acteurs. C'est pas bien. Il faut que les cliks changent l'arrayList des acteurs du film et que le bouton applique les updates si changement il y a
 
     fun updateFilm(film: Film) {
@@ -116,12 +150,10 @@ class ViewFilmActivity : AppCompatActivity() {
         }
         // Insert the new row, returning the primary key value of the new row
         db.update(FeedReaderContract.FeedEntry.TABLE_NAME_FILMS, values, "_id = " + film.id.toString(), null)
-
 //        update des acteurs
         val database_table = "link"
         val key_name = "film"
         db.delete(database_table, key_name + "=" + film.id, null)
-
         val actorList = mutableListOf<String>()
         if (!firstActor.text.isEmpty()) actorList.add(firstActor.text.toString())
         for (i in 1 until ActorView.childCount) {
@@ -218,9 +250,7 @@ class ViewFilmActivity : AppCompatActivity() {
         pref.apply()
         Toast.makeText(this.applicationContext, "Croise tout ce que tu as, \"NORMALEMENT\" c'est sauvegardé", Toast.LENGTH_LONG).show()
     }
-
     fun load() {
-
         val pref = this.getPreferences(Context.MODE_PRIVATE)
         Title.setText(pref.getString("Title", ""))
         firstActor.setText(pref.getString("firstActor", ""))
